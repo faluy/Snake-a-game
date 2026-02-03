@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Змейка на Python - Классическая игра</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: #5d5d7a;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Видео фон */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.15;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+        }
+
+        /* Шапка */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: #ff9ebb;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff9ebb 0%, #a3d9ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Основной контент */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #7c7ca5;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #8a8ab5;
+        }
+
+        /* Кнопка скачивания */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #ffb8d9 0%, #b8e1ff 100%);
+            color: #5d5d7a;
+            padding: 18px 35px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(255, 184, 217, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255, 184, 217, 0.4);
+        }
+
+        .download-btn i {
+            font-size: 1.5rem;
+        }
+
+        /* История игры */
+        .game-history {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .game-history h2 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: #7c7ca5;
+            text-align: center;
+        }
+
+        .history-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .history-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .history-card h3 {
+            color: #ff9ebb;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .history-card p {
+            color: #8a8ab5;
+        }
+
+        /* Особенности игры */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #a3d9ff;
+        }
+
+        .feature-card h3 {
+            color: #7c7ca5;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid rgba(163, 217, 255, 0.2);
+            color: #8a8ab5;
+        }
+
+        /* Демонстрация игры */
+        .game-preview {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-preview h3 {
+            color: #7c7ca5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .game-screen {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #2a2a3c;
+            position: relative;
+        }
+
+        .snake-game {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновое видео -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="https://yandex.ru/video/preview/787537616948182602?from=tabbar&parent-reqid=1770115328727867-5153988685351861516-balancer-l7leveler-kubr-yp-sas-97-BAL&text=%D0%B8%D0%B3%D1%80%D0%B0+%D0%BE%D0%B1%D1%8B%D1%87%D0%BD%D0%B0%D1%8F+%D0%B7%D0%BC%D0%B5%D0%B9%D0%BA%D0%B0+%D0%B2%D0%B8%D0%B4%D0%B5%D0%BE" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
+
+    <div class="container">
+        <!-- Шапка -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🐍</div>
+                <div class="logo-text">Python Snake</div>
+            </div>
+            <div class="tagline">
+                <h3>Классика игровой индустрии</h3>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Змейка на Python - классическая игра для всех</h1>
+                <p>Окунитесь в ностальгию с нашей реализацией классической игры "Змейка", созданной на языке Python. Простой, но захватывающий геймплей, плавное управление и приятная графика.</p>
+                
+                <a href="#download" class="download-btn">
+                    <i class="fas fa-download"></i> Скачать игру бесплатно
+                </a>
+            </div>
+            
+            <div class="game-preview">
+                <h3>Демонстрация игры</h3>
+                <div class="game-screen">
+                    <div class="snake-game">
+                        <div class="game-placeholder">
+                            <div style="font-size: 4rem; margin-bottom: 10px;">🐍</div>
+                            <p>Игра "Змейка"</p>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; text-align: center; color: #8a8ab5;">
+                    Управление: стрелки на клавиатуре
+                </p>
+            </div>
+        </section>
+
+        <!-- История игры -->
+        <section class="game-history">
+            <h2>История игры "Змейка"</h2>
+            <div class="history-content">
+                <div class="history-card">
+                    <h3>Первое появление</h3>
+                    <p>Игра "Змейка" впервые появилась в 1976 году под названием "Blockade". Её создателями были разработчики из компании Gremlin Interactive. Игра была аркадной и предназначалась для двух игроков.</p>
+                </div>
+                
+                <div class="history-card">
+                    <h3>Популяризация Nokia</h3>
+                    <p>Всемирную известность "Змейка" получила в 1998 году после того, как была предустановлена на телефоны Nokia. Игра стала одной из самых популярных мобильных игр в истории, её установили более 400 миллионов раз.</p>
+                </div>
+                
+                <div class="history-card">
+                    <h3>Наша версия</h3>
+                    <p>Наша реализация создана на языке Python с использованием библиотеки PyGame. Мы сохранили классический геймплей, но добавили современные визуальные эффекты и плавное управление.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Особенности игры -->
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>Простое управление</h3>
+                <p>Управление змейкой осуществляется с помощью клавиш-стрелок, что делает игру доступной для игроков любого возраста.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Динамичный геймплей</h3>
+                <p>С каждым съеденным яблоком змейка увеличивается, а игра ускоряется, создавая напряженную и захватывающую атмосферу.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Система рекордов</h3>
+                <p>Игра сохраняет ваш лучший результат, позволяя соревноваться с друзьями и с самим собой.</p>
+            </div>
+        </section>
+
+        <!-- Как играть -->
+        <section class="game-history" id="download">
+            <h2>Как играть в "Змейку"?</h2>
+            <div class="history-content">
+                <div class="history-card">
+                    <h3>Цель игры</h3>
+                    <p>Управляйте змейкой с помощью клавиш-стрелок, собирайте яблоки, чтобы увеличивать её длину и набирать очки. Избегайте столкновений со стенами и с собственным телом.</p>
+                </div>
+                
+                <div class="history-card">
+                    <h3>Особенности</h3>
+                    <p>С каждым съеденным яблоком змейка становится длиннее, а игра - сложнее. Чем больше яблок вы соберете, тем выше будет ваш счет.</p>
+                </div>
+                
+                <div class="history-card">
+                    <h3>Скачать игру</h3>
+                    <p>Наша версия "Змейки" работает на Windows, macOS и Linux. Для установки просто скачайте архив и следуйте инструкциям в файле README.</p>
+                    <a href="#" class="download-btn" style="margin-top: 20px; padding: 15px 25px; font-size: 1.1rem;">
+                        <i class="fas fa-download"></i> Скачать (v1.2, 15 MB)
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Футер -->
+        <footer>
+            <p>© 2023 Python Snake Game. Все права защищены.</p>
+            <p>Игра создана с использованием Python и PyGame. Рекомендуется для игроков от 6 лет.</p>
+            <p style="margin-top: 20px;">
+                <a href="#" style="color: #a3d9ff; margin: 0 10px;">Политика конфиденциальности</a> | 
+                <a href="#" style="color: #a3d9ff; margin: 0 10px;">Условия использования</a> | 
+                <a href="#" style="color: #a3d9ff; margin: 0 10px;">Техподдержка</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Простая анимация для кнопки скачивания
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Анимация нажатия
+                this.style.transform = 'scale(0.95)';
+                
+                // Сообщение об успешном скачивании
+                setTimeout(() => {
+                    alert('Началась загрузка игры "Змейка на Python"! Если загрузка не началась, проверьте настройки браузера.');
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Простая анимация для карточек при прокрутке
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Назначаем анимацию для карточек
+        document.querySelectorAll('.history-card, .feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
